@@ -13,7 +13,7 @@ export default function ProfilePageAdmin() {
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [countryCode, setCountryCode] = useState(""); // Country code from API
+  const [countryCode] = useState("PK");
   const [balance, setBalance] = useState("");
   const [loading, setLoading] = useState(true); // Loading state
   const [error, setError] = useState(""); // Error state
@@ -47,7 +47,6 @@ export default function ProfilePageAdmin() {
         setEmail(data.email);
         setAddress(data.address);
         setPhoneNumber(data.phoneNumber);
-        setCountryCode(data.countryCode);
         setBalance(data.balance);
       } catch (err) {
         setError("Failed to fetch profile data.");

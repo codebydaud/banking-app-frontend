@@ -31,12 +31,6 @@
   margin-bottom: 10px; /* Adds space between each text element */
 }
 
-.error {
-  color: red;
-  font-weight: bold; /* Makes error text stand out */
-  margin-bottom: 20px; /* Adds space below the error message */
-}
-
 /* Optional: Add some spacing and center the text */
 .transactions-container p {
   text-align: center;

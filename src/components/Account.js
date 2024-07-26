@@ -36,6 +36,9 @@ export default function Account() {
         </>
       ) : currentAdmin ? (
         <>
+          <Link to="/admin/dashboard" className={classes.link}>
+            Dashboard
+          </Link>
           <span className="material-icons-outlined" title="Account">
             account_circle
           </span>
