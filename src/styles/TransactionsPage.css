@@ -1,0 +1,43 @@
+.transactions-container {
+  max-height: 100%; /* Keeps the container height limited */
+  overflow-y: auto; /* Enables vertical scrolling */
+  padding: 20px;
+  border: 1px solid #ddd; /* Optional: Adds a border to the container */
+  border-radius: 8px; /* Optional: Rounds the corners of the container */
+  background-color: var(--successGreen); /* Optional: Adds a background color */
+}
+
+.transactions-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.transaction-item {
+  border-bottom: 1px solid #ddd;
+  padding: 20px; /* Increases padding for larger items */
+  font-size: 18px; /* Adjust font size for better readability */
+  background-color: #fff; /* Optional: Adds a white background to each item */
+  border-radius: 8px; /* Optional: Rounds the corners of the items */
+  margin-bottom: 20px; /* Adds space between items */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: Adds a subtle shadow */
+}
+
+.transaction-item:last-child {
+  border-bottom: none; /* Removes the bottom border from the last item */
+}
+
+.transaction-item div {
+  margin-bottom: 10px; /* Adds space between each text element */
+}
+
+.error {
+  color: red;
+  font-weight: bold; /* Makes error text stand out */
+  margin-bottom: 20px; /* Adds space below the error message */
+}
+
+/* Optional: Add some spacing and center the text */
+.transactions-container p {
+  text-align: center;
+}

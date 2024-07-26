@@ -1,0 +1,56 @@
+.admin-container {
+  max-height: 500px; /* Keeps the container height limited */
+  overflow-y: auto; /* Enables vertical scrolling */
+  padding: 20px;
+  border: 1px solid #ddd; /* Adds a border to the container */
+  border-radius: 8px; /* Rounds the corners of the container */
+  background-color: var(
+    --successGreen
+  ); /* Background color for the container */
+}
+
+.accounts-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.account-item {
+  border-bottom: 1px solid #ddd;
+  padding: 15px 20px; /* Increases padding for larger items */
+  font-size: 20px; /* Increases font size for better readability */
+  background-color: #fff; /* White background for items */
+  border-radius: 8px; /* Rounds the corners of items */
+  margin-bottom: 20px; /* Adds space between items */
+  position: relative; /* For positioning the view button */
+}
+
+.account-item:last-child {
+  border-bottom: none; /* Removes the bottom border from the last item */
+}
+
+.error {
+  color: red;
+  font-weight: bold; /* Makes error text stand out */
+  margin-bottom: 20px; /* Adds space below the error message */
+}
+
+.view-button {
+  background-color: var(--successGreen); /* Button background color */
+  color: #fff; /* Button text color */
+  border: none; /* Removes the default button border */
+  padding: 10px 15px; /* Increases padding */
+  font-size: 16px; /* Increases font size */
+  font-weight: bold; /* Makes the text bold */
+  border-radius: 5px; /* Rounds the button corners */
+  cursor: pointer; /* Changes cursor to pointer on hover */
+  position: absolute; /* Positions the button */
+  right: 20px; /* Positions the button to the right */
+  bottom: 15px; /* Positions the button from the bottom */
+}
+
+.view-button:hover {
+  background-color: #fff; /* Changes background color on hover */
+  color: var(--successGreen); /* Changes text color on hover */
+  border: 1px solid var(--successGreen); /* Adds border on hover */
+}
