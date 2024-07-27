@@ -1,15 +1,14 @@
 .account {
   width: 50%;
   display: flex;
-  gap: 1.5rem;
+  gap: 0.5rem;
   justify-content: flex-end;
   align-items: center;
   margin-right: 30px;
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 12px;
 }
 
-.account > span:last-child {
+.account>span:last-child {
   cursor: pointer;
 }
 

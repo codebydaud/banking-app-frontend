@@ -13,7 +13,7 @@ export function AuthProvider({ children }) {
     const token = localStorage.getItem("authToken");
     if (token) {
       axios
-        .get("http://localhost:8080/api/dashboard/user", {
+        .get("http://localhost:8080/api/user/profile", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -48,7 +48,7 @@ export function AuthProvider({ children }) {
   const login = async (identifier, password) => {
     const loginDetails = { identifier, password };
     const response = await axios.post(
-      "http://localhost:8080/api/users/login",
+      "http://localhost:8080/api/user/login",
       loginDetails,
       {
         headers: { "Content-Type": "application/json" },
@@ -58,7 +58,7 @@ export function AuthProvider({ children }) {
     localStorage.setItem("authToken", token);
 
     const userResponse = await axios.get(
-      "http://localhost:8080/api/dashboard/user",
+      "http://localhost:8080/api/user/profile",
       {
         headers: { Authorization: `Bearer ${token}` },
       }
@@ -94,7 +94,7 @@ export function AuthProvider({ children }) {
   const logout = async () => {
     const token = localStorage.getItem("authToken");
     if (token) {
-      await axios.get("http://localhost:8080/api/users/logout", {
+      await axios.get("http://localhost:8080/api/user/logout", {
         headers: { Authorization: `Bearer ${token}` },
       });
       localStorage.removeItem("authToken");

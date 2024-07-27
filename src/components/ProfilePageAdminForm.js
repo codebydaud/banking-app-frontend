@@ -86,25 +86,6 @@ export default function ProfilePageAdmin() {
     }
   };
 
-  const handleDeleteClick = async () => {
-    try {
-      await axios.delete(
-        `http://localhost:8080/api/admin/accounts/${accountNumber}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("adminAuthToken")}`,
-          },
-        }
-      );
-      setSuccessMessage("Profile deleted successfully.");
-      setTimeout(() => {
-        navigate("/admin/dashboard", { state: { refresh: true } }); // Navigate to the dashboard with a refresh state
-      }, 2000);
-    } catch (err) {
-      setError("Failed to delete profile.");
-    }
-  };
-
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 
@@ -214,19 +195,9 @@ export default function ProfilePageAdmin() {
           </Button>
         </>
       ) : (
-        <>
-          <Button disabled={loading} onClick={handleEditClick} type="button">
-            <span>Edit Profile</span>
-          </Button>
-          <Button
-            className="delete"
-            disabled={loading}
-            onClick={handleDeleteClick}
-            type="button"
-          >
-            <span>Delete Profile</span>
-          </Button>
-        </>
+        <Button disabled={loading} onClick={handleEditClick} type="button">
+          <span>Edit Profile</span>
+        </Button>
       )}
     </Form>
   );

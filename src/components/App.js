@@ -12,6 +12,7 @@ import ProfilePage from "./pages/ProfilePage";
 import TransactionsPage from "./pages/TransactionsPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import ProfilePageAdmin from "./pages/ProfilePageAdmin";
+import AdminTransactionsPage from "./pages/AdminTransactionsPage";
 
 export default function App() {
   return (
@@ -68,6 +69,14 @@ export default function App() {
               element={
                 <PrivateRoute adminOnly>
                   <ProfilePageAdmin />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/admin/transactions/:accountNumber"
+              element={
+                <PrivateRoute adminOnly>
+                  <AdminTransactionsPage />
                 </PrivateRoute>
               }
             />

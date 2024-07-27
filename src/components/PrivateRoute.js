@@ -14,7 +14,7 @@ function PrivateRoute({ children, adminOnly = false }) {
   } else {
     if (!currentUser) {
       // Redirect to user login page if not authenticated
-      return <Navigate to="/login" replace state={{ from: location }} />;
+      return <Navigate to="/user/login" replace state={{ from: location }} />;
     }
   }
 

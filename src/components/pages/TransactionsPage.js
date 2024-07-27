@@ -3,17 +3,19 @@ import axios from "axios";
 import { useAuth } from "../../contexts/AuthContext";
 import "../../styles/TransactionsPage.css"; // Import the CSS file
 
-export default function TransactionsPage() {
+export default function TransactionsPage({ accountNumber: propAccountNumber }) {
   const { currentUser } = useAuth();
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [accountNumber, setAccountNumber] = useState(""); // Add state for the logged-in user's account number
+  const accountNumber = propAccountNumber || (currentUser && currentUser.accountNumber);
 
   useEffect(() => {
     async function fetchTransactions() {
       try {
-        const token = localStorage.getItem("authToken");
+        const token = propAccountNumber
+          ? localStorage.getItem("adminAuthToken")
+          : localStorage.getItem("authToken");
 
         if (!token) {
           setError("No authentication token found.");
@@ -21,16 +23,15 @@ export default function TransactionsPage() {
           return;
         }
 
-        setAccountNumber(currentUser.accountNumber);
+        const endpoint = propAccountNumber
+          ? `http://localhost:8080/api/admin/account/${accountNumber}/transactions`
+          : "http://localhost:8080/api/user/transactions";
 
-        const transactionsResponse = await axios.get(
-          "http://localhost:8080/api/account/transactions",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const transactionsResponse = await axios.get(endpoint, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         setTransactions(transactionsResponse.data);
       } catch (err) {
@@ -40,8 +41,13 @@ export default function TransactionsPage() {
       }
     }
 
-    fetchTransactions();
-  }, []);
+    if (accountNumber) {
+      fetchTransactions();
+    } else {
+      setLoading(false);
+      setError("Account number not provided.");
+    }
+  }, [accountNumber, propAccountNumber]);
 
   if (loading) return <p>Loading transactions...</p>;
 
@@ -60,23 +66,19 @@ export default function TransactionsPage() {
               <li key={transaction.transactionId} className="transaction-item">
                 {isSource ? (
                   <div>
-                    <strong>To Account Number:</strong>{" "}
-                    {transaction.targetAccountNumber}
+                    <strong>To Account Number:</strong> {transaction.targetAccountNumber}
                   </div>
                 ) : isTarget ? (
                   <div>
-                    <strong>From Account Number:</strong>{" "}
-                    {transaction.sourceAccountNumber}
+                    <strong>From Account Number:</strong> {transaction.sourceAccountNumber}
                   </div>
                 ) : (
                   <>
                     <div>
-                      <strong>From Account Number:</strong>{" "}
-                      {transaction.sourceAccountNumber}
+                      <strong>From Account Number:</strong> {transaction.sourceAccountNumber}
                     </div>
                     <div>
-                      <strong>To Account Number:</strong>{" "}
-                      {transaction.targetAccountNumber}
+                      <strong>To Account Number:</strong> {transaction.targetAccountNumber}
                     </div>
                   </>
                 )}
@@ -84,16 +86,10 @@ export default function TransactionsPage() {
                   <strong>Amount:</strong> ${transaction.amount}
                 </div>
                 <div>
-                  <strong>Type:</strong>{" "}
-                  {isSource
-                    ? "Sent"
-                    : isTarget
-                    ? "Received"
-                    : transaction.transactionType}
+                  <strong>Type:</strong> {isSource ? "Sent" : isTarget ? "Received" : transaction.transactionType}
                 </div>
                 <div>
-                  <strong>Date:</strong>{" "}
-                  {new Date(transaction.transactionDate).toLocaleDateString()}
+                  <strong>Date:</strong> {new Date(transaction.transactionDate).toLocaleDateString()}
                 </div>
               </li>
             );

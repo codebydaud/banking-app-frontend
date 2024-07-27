@@ -11,7 +11,7 @@ export default function UserDashboard() {
     // Check if the user is authenticated
     const token = localStorage.getItem('authToken');
     if (!token) {
-      navigate('/login', { replace: true }); // Redirect to login if no token
+      navigate('/user/login', { replace: true }); // Redirect to login if no token
       return;
     }
 

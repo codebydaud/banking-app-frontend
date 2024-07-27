@@ -44,7 +44,7 @@ export default function FundTransferForm() {
       setSuccess("");
       setLoading(true);
       const response = await fetch(
-        "http://localhost:8080/api/account/fund-transfer",
+        "http://localhost:8080/api/user/fund-transfer",
         {
           method: "POST",
           headers: {

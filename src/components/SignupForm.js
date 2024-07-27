@@ -58,7 +58,7 @@ export default function SignupForm() {
 
       // Send data to backend
       await axios.post(
-        "http://localhost:8080/api/users/register",
+        "http://localhost:8080/api/user/register",
         signupDetails,
         {
           headers: {
