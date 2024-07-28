@@ -15,6 +15,7 @@ export default function ProfilePageAdmin() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [countryCode] = useState("PK");
   const [balance, setBalance] = useState("");
+  const [newPassword, setNewPassword] = useState(""); // New password state
   const [loading, setLoading] = useState(true); // Loading state
   const [error, setError] = useState(""); // Error state
   const [isEditMode, setIsEditMode] = useState(false); // Edit mode state
@@ -62,18 +63,27 @@ export default function ProfilePageAdmin() {
     setIsEditMode(!isEditMode);
   };
 
-  const handleSaveClick = async () => {
+  const handleSaveClick = async (e) => {
+    e.preventDefault(); // Prevent default form submission
+    if (!email || !address || !phoneNumber) {
+      setError("Please fill out all required fields.");
+      return;
+    }
+
     try {
+      const updateData = {
+        name,
+        email,
+        address,
+        phoneNumber,
+        countryCode,
+      };
+      if (newPassword) {
+        updateData.password = newPassword;
+      }
       await axios.put(
         `http://localhost:8080/api/admin/account/${accountNumber}`,
-        {
-          name,
-          email,
-          address,
-          phoneNumber,
-          countryCode,
-          balance,
-        },
+        updateData,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("adminAuthToken")}`,
@@ -81,6 +91,10 @@ export default function ProfilePageAdmin() {
         }
       );
       setIsEditMode(false);
+      setSuccessMessage("Profile updated successfully.");
+      setTimeout(() => {
+        setSuccessMessage("");
+      }, 2000);
     } catch (err) {
       setError("Failed to save profile data.");
     }
@@ -90,7 +104,7 @@ export default function ProfilePageAdmin() {
   if (error) return <p>{error}</p>;
 
   return (
-    <Form style={{ height: "500px" }}>
+    <Form style={{ height: "500px" }} onSubmit={handleSaveClick}>
       {successMessage && (
         <p style={{ color: "green", marginBottom: "10px" }}>{successMessage}</p>
       )}
@@ -116,24 +130,22 @@ export default function ProfilePageAdmin() {
         Account Balance
       </label>
       <TextInput
-        disabled={!isEditMode}
+        disabled
         type="text"
         placeholder="Account Balance"
         icon="currency_pound"
         value={`$${balance}`}
-        onChange={(e) => setBalance(e.target.value.replace("$", ""))}
       />
 
       <label htmlFor="name" style={{ display: "block", marginBottom: "5px" }}>
         Name
       </label>
       <TextInput
-        disabled={!isEditMode}
+        disabled
         type="text"
         placeholder="Name"
         icon="person"
         value={name}
-        onChange={(e) => setName(e.target.value)}
       />
 
       <label htmlFor="email" style={{ display: "block", marginBottom: "5px" }}>
@@ -146,6 +158,7 @@ export default function ProfilePageAdmin() {
         icon="alternate_email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
+        required={isEditMode}
       />
 
       <label
@@ -161,6 +174,7 @@ export default function ProfilePageAdmin() {
         icon="home"
         value={address}
         onChange={(e) => setAddress(e.target.value)}
+        required={isEditMode}
       />
 
       <label
@@ -183,14 +197,37 @@ export default function ProfilePageAdmin() {
         value={phoneNumber}
         disabled={!isEditMode}
         onChange={(e) => setPhoneNumber(e.target.value)}
+        required={isEditMode}
       />
+
+      {isEditMode && (
+        <>
+          <label
+            htmlFor="newPassword"
+            style={{ display: "block", marginBottom: "5px" }}
+          >
+            New Password
+          </label>
+          <TextInput
+            type="password"
+            icon="lock"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+
+          />
+        </>
+      )}
 
       {isEditMode ? (
         <>
-          <Button disabled={loading} onClick={handleSaveClick} type="button">
+          <Button disabled={loading} type="submit">
             <span>Save Profile</span>
           </Button>
-          <Button disabled={loading} onClick={handleEditClick} type="button">
+          <Button
+            disabled={loading}
+            onClick={handleEditClick}
+            type="button"
+          >
             <span>Cancel</span>
           </Button>
         </>
