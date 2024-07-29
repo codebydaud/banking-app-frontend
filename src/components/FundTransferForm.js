@@ -5,6 +5,10 @@ import Form from "./Form";
 import TextInput from "./TextInput";
 import Checkbox from "./Checkbox";
 
+const getToken = () => {
+  return localStorage.getItem("userAuthToken");
+};
+
 export default function FundTransferForm() {
   const [targetAccountNumber, setTargetAccountNumber] = useState("");
   const [description, setDescription] = useState("");
@@ -12,19 +16,8 @@ export default function FundTransferForm() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
-  const [agree, setAgree] = useState(false); // Make sure agree is initialized
-  const { currentUser } = useAuth();
-
-  let successTimeout;
-
-  useEffect(() => {
-    return () => {
-      // Cleanup the timeout when the component unmounts
-      if (successTimeout) {
-        clearTimeout(successTimeout);
-      }
-    };
-  }, []);
+  const [agree, setAgree] = useState(false); // Initialize agree
+  const { currentUser, triggerProfileUpdate } = useAuth(); // Use getToken to retrieve token
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -39,17 +32,25 @@ export default function FundTransferForm() {
       return;
     }
 
+    if (parseFloat(amount) <= 0) {
+      setError("Amount must be greater than zero.");
+      return;
+    }
+
     try {
       setError("");
       setSuccess("");
       setLoading(true);
+
+      const token = getToken(); // Use getToken from AuthContext
+
       const response = await fetch(
         "http://localhost:8080/api/user/fund-transfer",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
             targetAccountNumber,
@@ -59,8 +60,16 @@ export default function FundTransferForm() {
         }
       );
 
-      if (response.status != 200) {
-        // Check if response is JSON
+      if (response.ok) {
+        setSuccess("Fund transferred successfully");
+        setTargetAccountNumber("");
+        setAmount("");
+        setDescription("");
+        setAgree(false); // Reset agree checkbox
+
+        // Trigger profile update in AuthContext
+        triggerProfileUpdate();
+      } else {
         const contentType = response.headers.get("Content-Type");
         let result;
         if (contentType && contentType.includes("application/json")) {
@@ -78,22 +87,11 @@ export default function FundTransferForm() {
           );
         }
       }
-
-      // Handle success
-      setLoading(false);
-      setSuccess("Fund transferred successfully");
-      setTargetAccountNumber("");
-      setAmount("");
-      setDescription("");
-      setAgree(false); // Reset agree checkbox
-
-      successTimeout = setTimeout(() => {
-        setSuccess(""); // Clear success message after 3 seconds
-      }, 3000);
     } catch (err) {
       console.error(err);
-      setLoading(false);
       setError(err.message || "Failed to transfer funds. Please try again.");
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -133,10 +131,10 @@ export default function FundTransferForm() {
         onChange={(e) => setAgree(e.target.checked)}
       />
       <Button disabled={loading} type="submit">
-        <span>Fund Transfer</span>
+        <span>{loading ? "Processing..." : "Fund Transfer"}</span>
       </Button>
       {error && <p className="error">{error}</p>}
-      {success && <p className="success">{success}</p>} {/* Add this line */}
+      {success && <p className="success">{success}</p>}
     </Form>
   );
 }

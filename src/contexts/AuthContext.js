@@ -7,115 +7,109 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [currentAdmin, setCurrentAdmin] = useState(null);
+  const [needsProfileUpdate, setNeedsProfileUpdate] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("authToken");
-    if (token) {
-      axios
-        .get("http://localhost:8080/api/user/profile", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
+    async function fetchProfile() {
+      const token = localStorage.getItem("userAuthToken");
+      if (token) {
+        try {
+          const response = await axios.get(
+            "http://localhost:8080/api/user/profile",
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
           setCurrentUser(response.data);
-        })
-        .catch(() => {
-          localStorage.removeItem("authToken");
+          setNeedsProfileUpdate(false);
+        } catch {
+          localStorage.removeItem("userAuthToken");
           setCurrentUser(null);
-        });
+          navigate("/user/login", { replace: true });
+        }
+      }
     }
 
-    const adminToken = localStorage.getItem("adminAuthToken");
-    if (adminToken) {
-      axios
-        .get("http://localhost:8080/api/admin/accounts", {
-          headers: {
-            Authorization: `Bearer ${adminToken}`,
-          },
-        })
-        .then((response) => {
-          setCurrentAdmin(response.data);
-        })
-        .catch(() => {
-          localStorage.removeItem("adminAuthToken");
-          setCurrentAdmin(null);
-        });
-    }
-  }, []);
+    fetchProfile();
+  }, [needsProfileUpdate, navigate]);
 
   const login = async (identifier, password) => {
-    const loginDetails = { identifier, password };
-    const response = await axios.post(
-      "http://localhost:8080/api/user/login",
-      loginDetails,
-      {
-        headers: { "Content-Type": "application/json" },
-      }
-    );
-    const token = response.data.token;
-    localStorage.setItem("authToken", token);
-
-    const userResponse = await axios.get(
-      "http://localhost:8080/api/user/profile",
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
-
-    setCurrentUser(userResponse.data);
-    navigate("/user/dashboard", { replace: true });
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/user/login",
+        { identifier, password },
+        { headers: { "Content-Type": "application/json" } }
+      );
+      const { token } = response.data;
+      localStorage.setItem("userAuthToken", token);
+      setCurrentUser(response.data);
+      navigate("/user/dashboard", { replace: true });
+    } catch {
+      throw new Error("Invalid credentials");
+    }
   };
 
   const adminLogin = async (identifier, password) => {
-    const loginDetails = { identifier, password };
-    const response = await axios.post(
-      "http://localhost:8080/api/admin/login",
-      loginDetails,
-      {
-        headers: { "Content-Type": "application/json" },
-      }
-    );
-    const token = response.data.token;
-    localStorage.setItem("adminAuthToken", token);
-
-    const adminResponse = await axios.get(
-      "http://localhost:8080/api/admin/accounts",
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
-
-    setCurrentAdmin(adminResponse.data);
-    navigate("/admin/dashboard", { replace: true });
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/admin/login",
+        { identifier, password },
+        { headers: { "Content-Type": "application/json" } }
+      );
+      const { token } = response.data;
+      localStorage.setItem("adminAuthToken", token);
+      setCurrentAdmin(response.data);
+      navigate("/admin/dashboard", { replace: true });
+    } catch {
+      throw new Error("Invalid credentials");
+    }
   };
 
   const logout = async () => {
-    const token = localStorage.getItem("authToken");
-    if (token) {
-      await axios.get("http://localhost:8080/api/user/logout", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      localStorage.removeItem("authToken");
+    const userToken = localStorage.getItem("userAuthToken");
+    if (userToken) {
+      try {
+        await axios.get("http://localhost:8080/api/user/logout", {
+          headers: { Authorization: `Bearer ${userToken}` },
+        });
+      } catch {
+        console.error("Failed to log out user");
+      }
+      localStorage.removeItem("userAuthToken");
       setCurrentUser(null);
-      navigate("/user/login", { replace: true });
     }
 
     const adminToken = localStorage.getItem("adminAuthToken");
     if (adminToken) {
-      await axios.get("http://localhost:8080/api/admin/logout", {
-        headers: { Authorization: `Bearer ${adminToken}` },
-      });
+      try {
+        await axios.get("http://localhost:8080/api/admin/logout", {
+          headers: { Authorization: `Bearer ${adminToken}` },
+        });
+      } catch {
+        console.error("Failed to log out admin");
+      }
       localStorage.removeItem("adminAuthToken");
       setCurrentAdmin(null);
-      navigate("/admin/login", { replace: true });
     }
+
+    navigate("/user/login", { replace: true });
+  };
+
+  const triggerProfileUpdate = () => {
+    setNeedsProfileUpdate(true);
   };
 
   return (
     <AuthContext.Provider
-      value={{ currentUser, currentAdmin, login, adminLogin, logout }}
+      value={{
+        currentUser,
+        currentAdmin,
+        login,
+        adminLogin,
+        logout,
+        triggerProfileUpdate,
+      }}
     >
       {children}
     </AuthContext.Provider>
