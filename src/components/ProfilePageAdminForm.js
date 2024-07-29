@@ -71,6 +71,7 @@ export default function ProfilePageAdmin() {
     }
 
     try {
+      setError("");
       const updateData = {
         name,
         email,
@@ -96,12 +97,23 @@ export default function ProfilePageAdmin() {
         setSuccessMessage("");
       }, 2000);
     } catch (err) {
-      setError("Failed to save profile data.");
+      if (err.response) {
+        // Check if the response contains a plain text error message
+        if (typeof err.response.data === "string") {
+          setError(err.response.data);
+        } else if (err.response.data && err.response.data.message) {
+          // Check if the response contains a JSON object with a message field
+          setError(err.response.data.message);
+        } else {
+          setError("Failed to save profile data!");
+        }
+      } else {
+        setError("Failed to save profile data!");
+      }
     }
   };
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
 
   return (
     <Form style={{ height: "500px" }} onSubmit={handleSaveClick}>
@@ -213,7 +225,6 @@ export default function ProfilePageAdmin() {
             icon="lock"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
-
           />
         </>
       )}
@@ -223,11 +234,7 @@ export default function ProfilePageAdmin() {
           <Button disabled={loading} type="submit">
             <span>Save Profile</span>
           </Button>
-          <Button
-            disabled={loading}
-            onClick={handleEditClick}
-            type="button"
-          >
+          <Button disabled={loading} onClick={handleEditClick} type="button">
             <span>Cancel</span>
           </Button>
         </>
@@ -236,6 +243,7 @@ export default function ProfilePageAdmin() {
           <span>Edit Profile</span>
         </Button>
       )}
+      {error && <p className="error">{error}</p>}
     </Form>
   );
 }

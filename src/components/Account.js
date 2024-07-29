@@ -60,7 +60,7 @@ export default function Account() {
             Login
           </Link>
           <Link to="/admin/login" className={classes.link}>
-            Admin Login
+            Admin Portal
           </Link>
         </>
       )}
