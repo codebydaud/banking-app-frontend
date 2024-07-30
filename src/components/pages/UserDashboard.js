@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import paymentImage from "../../assets/images/payment.png";
+import profileImage from "../../assets/images/man.png";
+import historyImage from "../../assets/images/invoice.png";
+import "../../styles/UserDashboard.css";
 
 export default function UserDashboard() {
   const { currentUser, triggerProfileUpdate } = useAuth();
@@ -42,7 +47,26 @@ export default function UserDashboard() {
   return (
     <div>
       <h1>Welcome, {currentUser.name}</h1>
-      {/* Render other user data as needed */}
+      <section className="dashboardGrid">
+        <article className="dashboardItem">
+          <img src={paymentImage} alt="Fund Transfer" />
+          <Link to="/user/transfer-funds" className="link">
+            Transfer Funds
+          </Link>
+        </article>
+        <article className="dashboardItem">
+          <img src={historyImage} alt="Recent Transactions" />
+          <Link to="/user/transactions" className="link">
+            Transactions
+          </Link>
+        </article>
+        <article className="dashboardItem">
+          <img src={profileImage} alt="Profile" />
+          <Link to="/user/profile" className="link">
+            Profile
+          </Link>
+        </article>
+      </section>
     </div>
   );
 }

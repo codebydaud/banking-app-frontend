@@ -1,0 +1,36 @@
+.dashboardGrid {
+  width: 100vw;
+  max-width: 1170px;
+  margin: 5rem auto;
+  display: grid;
+  gap: 2rem;
+}
+
+@media screen and (min-width: 768px) {
+  .dashboardGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.dashboardItem {
+  background: #fff;
+  border-radius: 1rem;
+  padding: 2rem;
+  text-align: center;
+}
+
+.dashboardItem img {
+  width: 100%;
+  object-fit: cover;
+}
+
+.dashboardItem .link {
+  font-size: 20px; /* Adjust font size as needed */
+  color: #0000ff; /* Replace with your desired color */
+  text-decoration: none; /* Removes underline from the link */
+}
+
+.dashboardItem .link:hover {
+  color: #0000b2; /* Color when hovered, adjust as needed */
+  text-decoration: underline; /* Optional: Adds underline on hover */
+}
