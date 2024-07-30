@@ -69,6 +69,9 @@ export default function FundTransferForm() {
 
         // Trigger profile update in AuthContext
         triggerProfileUpdate();
+        setTimeout(() => {
+          setSuccess("");
+        }, 2000);
       } else {
         const contentType = response.headers.get("Content-Type");
         let result;

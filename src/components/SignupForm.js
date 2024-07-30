@@ -73,7 +73,11 @@ export default function SignupForm() {
       // Delay navigation to login page
       successTimeout = setTimeout(() => {
         setSuccess(""); // Clear success message
-        navigate("/user/login"); // Navigate to login page
+        if (localStorage.getItem("adminAuthToken")) {
+          navigate("/admin/dashboard");
+        } else {
+          navigate("/user/login"); // Navigate to login page
+        }
       }, 3000);
 
       setAgree(false);
@@ -160,8 +164,14 @@ export default function SignupForm() {
       </Button>
       {error && <p className="error">{error}</p>}
       {success && <p className="success">{success}</p>} {/* Add this line */}
-      <div className="info">
-        Already have an account? <Link to="/login">Login</Link> instead.
+      <div className="container">
+        {!localStorage.getItem("adminAuthToken") && (
+          <div className="info">
+            Already have an account? <Link to="/user/login">Login</Link>{" "}
+            instead.
+          </div>
+        )}
+        {/* Other components or elements */}
       </div>
     </Form>
   );

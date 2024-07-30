@@ -39,6 +39,9 @@ export default function Account() {
           <Link to="/admin/dashboard" className={classes.link}>
             Dashboard
           </Link>
+          <Link to="/user/signup" className={classes.link}>
+            Create an account
+          </Link>
           <span className="material-icons-outlined" title="Account">
             account_circle
           </span>

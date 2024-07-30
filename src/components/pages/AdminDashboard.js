@@ -27,11 +27,14 @@ export default function AdminDashboard() {
 
     async function fetchAccounts() {
       try {
-        const response = await axios.get("http://localhost:8080/api/admin/accounts", {
-          headers: {
-            Authorization: `Bearer ${adminToken}`,
-          },
-        });
+        const response = await axios.get(
+          "http://localhost:8080/api/admin/accounts",
+          {
+            headers: {
+              Authorization: `Bearer ${adminToken}`,
+            },
+          }
+        );
         setAccounts(response.data);
       } catch (err) {
         console.error("Failed to fetch accounts:", err);
@@ -54,15 +57,20 @@ export default function AdminDashboard() {
   const handleDeleteClick = async (accountNumber) => {
     const adminToken = localStorage.getItem("adminAuthToken");
     try {
-      await axios.delete(`http://localhost:8080/api/admin/account/${accountNumber}`, {
-        headers: {
-          Authorization: `Bearer ${adminToken}`,
-        },
-      });
+      await axios.delete(
+        `http://localhost:8080/api/admin/account/${accountNumber}`,
+        {
+          headers: {
+            Authorization: `Bearer ${adminToken}`,
+          },
+        }
+      );
       setSuccessMessage("Account deleted successfully.");
       setDeletedAccountNumber(accountNumber);
       setTimeout(() => {
-        setAccounts(accounts.filter((account) => account.accountNumber !== accountNumber));
+        setAccounts(
+          accounts.filter((account) => account.accountNumber !== accountNumber)
+        );
         setSuccessMessage("");
         setDeletedAccountNumber(null);
       }, 2000); // Wait for 2 seconds before removing the account
@@ -85,20 +93,24 @@ export default function AdminDashboard() {
           {accounts.map((account) => (
             <li
               key={account.accountNumber}
-              className={`account-item ${deletedAccountNumber === account.accountNumber ? 'deleting' : ''}`}
+              className={`account-item ${
+                deletedAccountNumber === account.accountNumber ? "deleting" : ""
+              }`}
             >
               <div className="account-details">
                 <div>
                   <strong>Account Number:</strong> {account.accountNumber}
                 </div>
                 <div>
-                  <strong>Account Holder Name:</strong> {account.accountHolderName}
+                  <strong>Account Holder Name:</strong>{" "}
+                  {account.accountHolderName}
                 </div>
                 <div>
                   <strong>Balance:</strong> ${account.balance.toFixed(2)}
                 </div>
                 <div>
-                  <strong>Created At:</strong> {new Date(account.createdAt).toLocaleDateString()}
+                  <strong>Created At:</strong>{" "}
+                  {new Date(account.createdAt).toLocaleDateString()}
                 </div>
               </div>
               <div className="button-container">
@@ -110,7 +122,9 @@ export default function AdminDashboard() {
                 </button>
                 <button
                   className="view-transactions-button"
-                  onClick={() => handleViewTransactionsClick(account.accountNumber)}
+                  onClick={() =>
+                    handleViewTransactionsClick(account.accountNumber)
+                  }
                 >
                   View Transactions
                 </button>

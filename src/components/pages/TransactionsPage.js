@@ -90,6 +90,9 @@ export default function TransactionsPage({ accountNumber: propAccountNumber }) {
                     : transaction.transactionType}
                 </div>
                 <div>
+                  <strong>Description:</strong> {transaction.description}
+                </div>
+                <div>
                   <strong>Date:</strong>{" "}
                   {new Date(transaction.transactionDate).toLocaleDateString()}
                 </div>
