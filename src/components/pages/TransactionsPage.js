@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../../contexts/AuthContext";
-import "../../styles/TransactionsPage.css"; // Import the CSS file
+import "../../styles/TransactionsPage.css";
 
 const getToken = (propAccountNumber) => {
   return propAccountNumber
@@ -20,7 +20,7 @@ export default function TransactionsPage({ accountNumber: propAccountNumber }) {
   useEffect(() => {
     async function fetchTransactions() {
       try {
-        const token = getToken(propAccountNumber); // Pass propAccountNumber to getToken
+        const token = getToken(propAccountNumber);
 
         if (!token) {
           setError("No authentication token found.");

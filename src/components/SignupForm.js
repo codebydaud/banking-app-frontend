@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios"; // Import axios
+import axios from "axios";
 import Button from "./Button";
 import Checkbox from "./Checkbox";
 import Form from "./Form";
@@ -13,17 +13,16 @@ export default function SignupForm() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [address, setAddress] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [agree, setAgree] = useState(false); // Changed to boolean
+  const [agree, setAgree] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [countryCode] = useState("PK");
   const [success, setSuccess] = useState("");
+  const [countryCode] = useState("PK");
   const navigate = useNavigate();
 
   let successTimeout;
   useEffect(() => {
     return () => {
-      // Cleanup the timeout when the component unmounts
       if (successTimeout) {
         clearTimeout(successTimeout);
       }
@@ -33,7 +32,6 @@ export default function SignupForm() {
   async function handleSubmit(e) {
     e.preventDefault();
 
-    // Validation
     if (password !== confirmPassword) {
       return setError("Password mismatched!");
     }
@@ -41,12 +39,32 @@ export default function SignupForm() {
       return setError("You must agree to the Terms & Conditions.");
     }
 
+    // Name validation: only alphabets
+    const nameRegex = /^[A-Za-z\s]+$/;
+    if (!nameRegex.test(name)) {
+      return setError("Name must contain only alphabets.");
+    }
+
+    // Password validation: at least one uppercase letter, one lowercase letter, one digit, one special character, and length greater than 7
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!passwordRegex.test(password)) {
+      return setError(
+        "Password must contain at least one uppercase letter, one lowercase letter, one digit, one special character, and be atleast 8 characters long."
+      );
+    }
+
+    // Phone number validation: only digits and length must be 10
+    const phoneRegex = /^\d{10}$/;
+    if (!phoneRegex.test(phoneNumber)) {
+      return setError("Phone number must be exactly 10 digits.");
+    }
+
     try {
       setError("");
       setSuccess("");
       setLoading(true);
 
-      // Prepare data to be sent
       const signupDetails = {
         name,
         email,
@@ -56,7 +74,6 @@ export default function SignupForm() {
         countryCode,
       };
 
-      // Send data to backend
       await axios.post(
         "http://localhost:8080/api/user/register",
         signupDetails,
@@ -70,13 +87,12 @@ export default function SignupForm() {
       setLoading(false);
       setSuccess("Account created successfully");
 
-      // Delay navigation to login page
       successTimeout = setTimeout(() => {
-        setSuccess(""); // Clear success message
+        setSuccess("");
         if (localStorage.getItem("adminAuthToken")) {
           navigate("/admin/dashboard");
         } else {
-          navigate("/user/login"); // Navigate to login page
+          navigate("/user/login");
         }
       }, 3000);
 
@@ -84,13 +100,10 @@ export default function SignupForm() {
     } catch (err) {
       setLoading(false);
 
-      // Handle error responses
       if (err.response) {
-        // Check if the response contains a plain text error message
         if (typeof err.response.data === "string") {
           setError(err.response.data);
         } else if (err.response.data && err.response.data.message) {
-          // Check if the response contains a JSON object with a message field
           setError(err.response.data.message);
         } else {
           setError("Failed to create an account!");
@@ -156,14 +169,14 @@ export default function SignupForm() {
         required
         type="checkbox"
         text=" I agree to the Terms &amp; Conditions"
-        checked={agree} // Change value to checked
-        onChange={(e) => setAgree(e.target.checked)} // Update to e.target.checked
+        checked={agree}
+        onChange={(e) => setAgree(e.target.checked)}
       />
       <Button disabled={loading} type="submit">
         <span>Submit now</span>
       </Button>
       {error && <p className="error">{error}</p>}
-      {success && <p className="success">{success}</p>} {/* Add this line */}
+      {success && <p className="success">{success}</p>}
       <div className="container">
         {!localStorage.getItem("adminAuthToken") && (
           <div className="info">
@@ -171,7 +184,6 @@ export default function SignupForm() {
             instead.
           </div>
         )}
-        {/* Other components or elements */}
       </div>
     </Form>
   );

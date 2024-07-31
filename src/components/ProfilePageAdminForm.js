@@ -1,36 +1,34 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useAuth } from "../contexts/AuthContext"; // Import AuthContext for authentication
-import TextInput from "./TextInput"; // Import TextInput component
+import { useAuth } from "../contexts/AuthContext";
+import TextInput from "./TextInput";
 import Form from "./Form";
 import Button from "./Button";
 
 export default function ProfilePageAdmin() {
-  const { accountNumber } = useParams(); // Get accountNumber from URL parameters
-  const { currentAdmin } = useAuth(); // Get currentAdmin from AuthContext for authorization
+  const { accountNumber } = useParams();
+  const { currentAdmin } = useAuth();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [countryCode] = useState("PK");
   const [balance, setBalance] = useState("");
-  const [newPassword, setNewPassword] = useState(""); // New password state
-  const [loading, setLoading] = useState(true); // Loading state
-  const [error, setError] = useState(""); // Error state
-  const [isEditMode, setIsEditMode] = useState(false); // Edit mode state
-  const [successMessage, setSuccessMessage] = useState(""); // Success message state
+  const [newPassword, setNewPassword] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Redirect to login if no currentAdmin data
     if (!currentAdmin) {
       navigate("/admin/login", { replace: true });
       return;
     }
 
-    // Fetch profile data based on accountNumber
     const fetchProfileData = async () => {
       try {
         const response = await axios.get(
@@ -42,7 +40,6 @@ export default function ProfilePageAdmin() {
           }
         );
 
-        // Set state with the fetched data
         const data = response.data;
         setName(data.name);
         setEmail(data.email);
@@ -63,10 +60,35 @@ export default function ProfilePageAdmin() {
     setIsEditMode(!isEditMode);
   };
 
+  const validatePhoneNumber = (phoneNumber) => {
+    const phoneRegex = /^[0-9]{10}$/; // Example for a 10-digit phone number
+    return phoneRegex.test(phoneNumber);
+  };
+
+  const validatePassword = (password) => {
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,127}$/;
+    return passwordRegex.test(password);
+  };
+
   const handleSaveClick = async (e) => {
-    e.preventDefault(); // Prevent default form submission
+    e.preventDefault();
+
+    // Validate fields
     if (!email || !address || !phoneNumber) {
       setError("Please fill out all required fields.");
+      return;
+    }
+
+    if (!validatePhoneNumber(phoneNumber)) {
+      setError("Phone number must be 10 digits.");
+      return;
+    }
+
+    if (newPassword && !validatePassword(newPassword)) {
+      setError(
+        "Password must contain at least one uppercase letter, one lowercase letter, one digit, one special character, and be atleast 8 characters long."
+      );
       return;
     }
 
@@ -98,11 +120,9 @@ export default function ProfilePageAdmin() {
       }, 2000);
     } catch (err) {
       if (err.response) {
-        // Check if the response contains a plain text error message
         if (typeof err.response.data === "string") {
           setError(err.response.data);
         } else if (err.response.data && err.response.data.message) {
-          // Check if the response contains a JSON object with a message field
           setError(err.response.data.message);
         } else {
           setError("Failed to save profile data!");

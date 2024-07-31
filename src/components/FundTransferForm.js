@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import Button from "./Button";
 import Form from "./Form";
@@ -16,8 +16,8 @@ export default function FundTransferForm() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
-  const [agree, setAgree] = useState(false); // Initialize agree
-  const { currentUser, triggerProfileUpdate } = useAuth(); // Use getToken to retrieve token
+  const [agree, setAgree] = useState(false);
+  const { currentUser, triggerProfileUpdate } = useAuth();
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -37,12 +37,18 @@ export default function FundTransferForm() {
       return;
     }
 
+    // Validate that amount is a multiple of 100
+    if (parseFloat(amount) % 100 !== 0) {
+      setError("Amount must be a multiple of 100.");
+      return;
+    }
+
     try {
       setError("");
       setSuccess("");
       setLoading(true);
 
-      const token = getToken(); // Use getToken from AuthContext
+      const token = getToken();
 
       const response = await fetch(
         "http://localhost:8080/api/user/fund-transfer",
@@ -65,9 +71,7 @@ export default function FundTransferForm() {
         setTargetAccountNumber("");
         setAmount("");
         setDescription("");
-        setAgree(false); // Reset agree checkbox
-
-        // Trigger profile update in AuthContext
+        setAgree(false);
         triggerProfileUpdate();
         setTimeout(() => {
           setSuccess("");

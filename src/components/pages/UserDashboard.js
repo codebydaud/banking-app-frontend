@@ -15,17 +15,14 @@ export default function UserDashboard() {
 
   useEffect(() => {
     async function checkUser() {
-      // Check if user is logged in
       const token = localStorage.getItem("userAuthToken");
       if (!token) {
-        navigate("/user/login", { replace: true }); // Redirect to login if no token
+        navigate("/user/login", { replace: true });
         return;
       }
 
-      // Fetch user profile if necessary
       if (!currentUser) {
         try {
-          // Trigger profile update if needed
           triggerProfileUpdate();
         } catch (err) {
           setError("Failed to fetch user data.");
@@ -33,7 +30,7 @@ export default function UserDashboard() {
           setLoading(false);
         }
       } else {
-        setLoading(false); // Set loading to false if user data is already present
+        setLoading(false);
       }
     }
 
