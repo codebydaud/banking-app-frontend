@@ -133,7 +133,7 @@ export default function FundTransferForm() {
       <Checkbox
         required
         type="checkbox"
-        text=" I confirm the provided details"
+        text="I confirm the provided details"
         checked={agree}
         onChange={(e) => setAgree(e.target.checked)}
       />

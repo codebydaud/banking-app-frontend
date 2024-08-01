@@ -12,7 +12,7 @@ import ProfilePage from "./pages/ProfilePage";
 import TransactionsPage from "./pages/TransactionsPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import ProfilePageAdmin from "./pages/ProfilePageAdmin";
-import AdminTransactionsPage from "./pages/AdminTransactionsPage";
+import AdminTransactionsPageWrapper from "./pages/AdminTransactionsPageWrapper";
 
 export default function App() {
   return (
@@ -76,7 +76,7 @@ export default function App() {
               path="/admin/transactions/:accountNumber"
               element={
                 <PrivateRoute adminOnly>
-                  <AdminTransactionsPage />
+                  <AdminTransactionsPageWrapper />
                 </PrivateRoute>
               }
             />

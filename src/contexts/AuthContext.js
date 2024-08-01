@@ -10,29 +10,38 @@ export function AuthProvider({ children }) {
   const [needsProfileUpdate, setNeedsProfileUpdate] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    async function fetchProfile() {
-      const token = localStorage.getItem("userAuthToken");
-      if (token) {
-        try {
-          const response = await axios.get(
-            "http://localhost:8080/api/user/profile",
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
-          );
-          setCurrentUser(response.data);
-          setNeedsProfileUpdate(false);
-        } catch {
-          localStorage.removeItem("userAuthToken");
-          setCurrentUser(null);
-          navigate("/user/login", { replace: true });
-        }
+  // Function to fetch user profile
+  const fetchUserProfile = async () => {
+    const token = localStorage.getItem("userAuthToken");
+    if (token) {
+      try {
+        const response = await axios.get(
+          "http://localhost:8080/api/user/profile",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        setCurrentUser(response.data);
+        setNeedsProfileUpdate(false);
+      } catch {
+        localStorage.removeItem("userAuthToken");
+        setCurrentUser(null);
+        navigate("/user/login", { replace: true });
       }
     }
+  };
 
-    fetchProfile();
-  }, [needsProfileUpdate, navigate]);
+  // Fetch user profile on mount or when profile update is triggered
+  useEffect(() => {
+    if (needsProfileUpdate) {
+      fetchUserProfile();
+    }
+  }, [needsProfileUpdate]);
+
+  // Fetch user profile on initial load if token exists
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
 
   const login = async (identifier, password) => {
     try {
@@ -43,7 +52,8 @@ export function AuthProvider({ children }) {
       );
       const { token } = response.data;
       localStorage.setItem("userAuthToken", token);
-      setCurrentUser(response.data);
+      await fetchUserProfile();
+      console.log("Navigating to /user/dashboard");
       navigate("/user/dashboard", { replace: true });
     } catch {
       throw new Error("Invalid credentials");
@@ -65,6 +75,7 @@ export function AuthProvider({ children }) {
       throw new Error("Invalid credentials");
     }
   };
+
 
   const logout = async () => {
     const userToken = localStorage.getItem("userAuthToken");

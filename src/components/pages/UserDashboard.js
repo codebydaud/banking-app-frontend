@@ -23,7 +23,7 @@ export default function UserDashboard() {
 
       if (!currentUser) {
         try {
-          triggerProfileUpdate();
+          await triggerProfileUpdate();
         } catch (err) {
           setError("Failed to fetch user data.");
         } finally {

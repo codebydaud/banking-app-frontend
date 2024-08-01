@@ -19,12 +19,6 @@ export default function AdminDashboard() {
       return;
     }
 
-    if (!currentAdmin) {
-      // Optionally handle the case where currentAdmin is not set
-      setLoading(false);
-      return;
-    }
-
     async function fetchAccounts() {
       try {
         const response = await axios.get(
@@ -44,7 +38,7 @@ export default function AdminDashboard() {
     }
 
     fetchAccounts();
-  }, [currentAdmin, navigate]);
+  }, [navigate]); // Only run once when component mounts
 
   const handleViewClick = (accountNumber) => {
     navigate(`/admin/profile/${accountNumber}`); // Adjust the route as needed
@@ -93,9 +87,8 @@ export default function AdminDashboard() {
           {accounts.map((account) => (
             <li
               key={account.accountNumber}
-              className={`account-item ${
-                deletedAccountNumber === account.accountNumber ? "deleting" : ""
-              }`}
+              className={`account-item ${deletedAccountNumber === account.accountNumber ? "deleting" : ""
+                }`}
             >
               <div className="account-details">
                 <div>
