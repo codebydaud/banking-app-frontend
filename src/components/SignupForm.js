@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import Button from "./Button";
 import Checkbox from "./Checkbox";
 import Form from "./Form";
@@ -18,6 +20,8 @@ export default function SignupForm() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState("");
   const [countryCode] = useState("PK");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
 
   let successTimeout;
@@ -132,22 +136,54 @@ export default function SignupForm() {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
-      <TextInput
-        required
-        type="password"
-        placeholder="Enter password"
-        icon="lock"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <TextInput
-        required
-        type="password"
-        placeholder="Confirm password"
-        icon="lock_clock"
-        value={confirmPassword}
-        onChange={(e) => setConfirmPassword(e.target.value)}
-      />
+      <div style={{ position: "relative" }}>
+        <TextInput
+          required
+          type={showPassword ? "text" : "password"}
+          placeholder="Enter password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <button
+          type="button"
+          onClick={() => setShowPassword(!showPassword)}
+          style={{
+            position: "absolute",
+            top: "50%",
+            right: "10px",
+            transform: "translateY(-50%)",
+            border: "none",
+            background: "transparent",
+            cursor: "pointer",
+          }}
+        >
+          <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+        </button>
+      </div>
+      <div style={{ position: "relative" }}>
+        <TextInput
+          required
+          type={showConfirmPassword ? "text" : "password"}
+          placeholder="Confirm password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+        />
+        <button
+          type="button"
+          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+          style={{
+            position: "absolute",
+            top: "50%",
+            right: "10px",
+            transform: "translateY(-50%)",
+            border: "none",
+            background: "transparent",
+            cursor: "pointer",
+          }}
+        >
+          <FontAwesomeIcon icon={showConfirmPassword ? faEyeSlash : faEye} />
+        </button>
+      </div>
       <TextInput
         required
         type="text"

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../contexts/AuthContext";
 import TextInput from "./TextInput";
 import Form from "./Form";
@@ -20,6 +22,7 @@ export default function ProfilePageAdmin() {
   const [error, setError] = useState("");
   const [isEditMode, setIsEditMode] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
 
@@ -87,7 +90,7 @@ export default function ProfilePageAdmin() {
 
     if (newPassword && !validatePassword(newPassword)) {
       setError(
-        "Password must contain at least one uppercase letter, one lowercase letter, one digit, one special character, and be atleast 8 characters long."
+        "Password must contain at least one uppercase letter, one lowercase letter, one digit, one special character, and be at least 8 characters long."
       );
       return;
     }
@@ -240,12 +243,29 @@ export default function ProfilePageAdmin() {
           >
             New Password
           </label>
-          <TextInput
-            type="password"
-            icon="lock"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-          />
+          <div style={{ position: "relative" }}>
+            <TextInput
+              type={showPassword ? "text" : "password"}
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              style={{
+                position: "absolute",
+                top: "50%",
+                right: "10px",
+                transform: "translateY(-50%)",
+                border: "none",
+                background: "transparent",
+                cursor: "pointer",
+                padding: "0", // Remove default padding
+              }}
+            >
+              <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+            </button>
+          </div>
         </>
       )}
 

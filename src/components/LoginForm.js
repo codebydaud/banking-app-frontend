@@ -1,5 +1,7 @@
-import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../contexts/AuthContext";
 import Button from "./Button";
 import Form from "./Form";
@@ -10,6 +12,7 @@ export default function LoginForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -20,6 +23,7 @@ export default function LoginForm() {
       setError("");
       setLoading(true);
       await login(identifier, password);
+      navigate("/user/dashboard"); // Redirect after successful login
     } catch (err) {
       setLoading(false);
       setError("Invalid credentials!");
@@ -36,14 +40,31 @@ export default function LoginForm() {
         value={identifier}
         onChange={(e) => setIdentifier(e.target.value)}
       />
-      <TextInput
-        type="password"
-        placeholder="Enter password"
-        icon="lock"
-        required
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
+      <div style={{ position: "relative" }}>
+        <TextInput
+          type={showPassword ? "text" : "password"}
+          placeholder="Enter password"
+          required
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <button
+          type="button"
+          onClick={() => setShowPassword(!showPassword)}
+          style={{
+            position: "absolute",
+            top: "40%",
+            right: "10px",
+            transform: "translateY(-50%)",
+            border: "none",
+            background: "transparent",
+            cursor: "pointer",
+            padding: "0",
+          }}
+        >
+          <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+        </button>
+      </div>
       <Button disabled={loading} type="submit">
         <span>Login</span>
       </Button>
