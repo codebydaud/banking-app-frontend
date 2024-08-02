@@ -32,6 +32,11 @@ export default function FundTransferForm() {
       return;
     }
 
+    if (!/^\d{10}$/.test(targetAccountNumber)) {
+      setError("Account number must be exactly 10 digits.");
+      return;
+    }
+
     if (parseFloat(amount) <= 0) {
       setError("Amount must be greater than zero.");
       return;
