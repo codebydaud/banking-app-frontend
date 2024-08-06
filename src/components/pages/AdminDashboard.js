@@ -2,20 +2,21 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import "../../styles/AdminDashboard.css"; 
+import "../../styles/AdminDashboard.css";
 
 export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [accounts, setAccounts] = useState([]);
   const [successMessage, setSuccessMessage] = useState("");
   const [deletedAccountNumber, setDeletedAccountNumber] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const { currentAdmin, logout } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     const adminToken = localStorage.getItem("adminAuthToken");
     if (!adminToken) {
-      navigate("/admin/login", { replace: true }); 
+      navigate("/admin/login", { replace: true });
       return;
     }
 
@@ -41,7 +42,7 @@ export default function AdminDashboard() {
   }, [navigate]);
 
   const handleViewClick = (accountNumber) => {
-    navigate(`/admin/profile/${accountNumber}`); 
+    navigate(`/admin/profile/${accountNumber}`);
   };
 
   const handleViewTransactionsClick = (accountNumber) => {
@@ -67,11 +68,19 @@ export default function AdminDashboard() {
         );
         setSuccessMessage("");
         setDeletedAccountNumber(null);
-      }, 2000); 
+      }, 2000);
     } catch (err) {
       console.error("Failed to delete account:", err);
     }
   };
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const filteredAccounts = accounts.filter((account) =>
+    account.accountHolderName.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   if (loading) return <div>Loading...</div>;
 
@@ -80,15 +89,26 @@ export default function AdminDashboard() {
       {successMessage && (
         <div className="success-message">{successMessage}</div>
       )}
-      {accounts.length === 0 ? (
+      <div className="search-bar-container">
+        <input
+          type="text"
+          
+          placeholder="Search by account holder name"
+          value={searchQuery}
+          onChange={handleSearchChange}
+          className="search-bar"
+        />
+      </div>
+      {filteredAccounts.length === 0 ? (
         <p>No accounts found</p>
       ) : (
         <ul className="accounts-list">
-          {accounts.map((account) => (
+          {filteredAccounts.map((account) => (
             <li
               key={account.accountNumber}
-              className={`account-item ${deletedAccountNumber === account.accountNumber ? "deleting" : ""
-                }`}
+              className={`account-item ${
+                deletedAccountNumber === account.accountNumber ? "deleting" : ""
+              }`}
             >
               <div className="account-details">
                 <div>
