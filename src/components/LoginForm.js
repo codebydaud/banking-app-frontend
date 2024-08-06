@@ -23,7 +23,7 @@ export default function LoginForm() {
       setError("");
       setLoading(true);
       await login(identifier, password);
-      navigate("/user/dashboard"); // Redirect after successful login
+      navigate("/user/dashboard");
     } catch (err) {
       setLoading(false);
       setError("Invalid credentials!");

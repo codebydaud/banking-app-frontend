@@ -64,7 +64,7 @@ export default function ProfilePageAdmin() {
   };
 
   const validatePhoneNumber = (phoneNumber) => {
-    const phoneRegex = /^[0-9]{10}$/; // Example for a 10-digit phone number
+    const phoneRegex = /^[0-9]{10}$/; 
     return phoneRegex.test(phoneNumber);
   };
 
@@ -77,7 +77,7 @@ export default function ProfilePageAdmin() {
   const handleSaveClick = async (e) => {
     e.preventDefault();
 
-    // Validate fields
+    
     if (!email || !address || !phoneNumber) {
       setError("Please fill out all required fields.");
       return;
@@ -260,7 +260,7 @@ export default function ProfilePageAdmin() {
                 border: "none",
                 background: "transparent",
                 cursor: "pointer",
-                padding: "0", // Remove default padding
+                padding: "0", 
               }}
             >
               <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />

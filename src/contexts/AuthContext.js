@@ -10,7 +10,6 @@ export function AuthProvider({ children }) {
   const [needsProfileUpdate, setNeedsProfileUpdate] = useState(false);
   const navigate = useNavigate();
 
-  // Function to fetch user profile
   const fetchUserProfile = async () => {
     const token = localStorage.getItem("userAuthToken");
     if (token) {
@@ -31,14 +30,30 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // Fetch user profile on mount or when profile update is triggered
+   const fetchUserBalance = async () => {
+     const token = localStorage.getItem("userAuthToken");
+     if (token) {
+       try {
+         const response = await axios.get(
+           "http://localhost:8080/api/user/balance",
+           {
+             headers: { Authorization: `Bearer ${token}` },
+           }
+         );
+         updateCurrentUserField("balance", response.data.balance);
+       } catch (err) {
+         console.error("Failed to fetch balance:", err);
+       }
+     }
+   };
+
+
   useEffect(() => {
     if (needsProfileUpdate) {
       fetchUserProfile();
     }
   }, [needsProfileUpdate]);
 
-  // Fetch user profile on initial load if token exists
   useEffect(() => {
     fetchUserProfile();
   }, []);
@@ -111,6 +126,13 @@ export function AuthProvider({ children }) {
     setNeedsProfileUpdate(true);
   };
 
+  const updateCurrentUserField = (field, value) => {
+    setCurrentUser((prevUser) => ({
+      ...prevUser,
+      [field]: value,
+    }));
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -120,6 +142,8 @@ export function AuthProvider({ children }) {
         adminLogin,
         logout,
         triggerProfileUpdate,
+        updateCurrentUserField,
+        fetchUserBalance, // Expose the new function
       }}
     >
       {children}

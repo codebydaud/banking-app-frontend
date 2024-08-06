@@ -17,7 +17,7 @@ export default function FundTransferForm() {
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
   const [agree, setAgree] = useState(false);
-  const { currentUser, triggerProfileUpdate } = useAuth();
+  const { currentUser, updateCurrentUserField, fetchUserBalance } = useAuth();
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -42,7 +42,6 @@ export default function FundTransferForm() {
       return;
     }
 
-    // Validate that amount is a multiple of 100
     if (parseFloat(amount) % 100 !== 0) {
       setError("Amount must be a multiple of 100.");
       return;
@@ -77,7 +76,8 @@ export default function FundTransferForm() {
         setAmount("");
         setDescription("");
         setAgree(false);
-        triggerProfileUpdate();
+
+        await fetchUserBalance();
         setTimeout(() => {
           setSuccess("");
         }, 2000);

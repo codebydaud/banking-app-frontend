@@ -43,13 +43,11 @@ export default function SignupForm() {
       return setError("You must agree to the Terms & Conditions.");
     }
 
-    // Name validation: only alphabets
     const nameRegex = /^[A-Za-z\s]+$/;
     if (!nameRegex.test(name)) {
       return setError("Name must contain only alphabets.");
     }
 
-    // Password validation: at least one uppercase letter, one lowercase letter, one digit, one special character, and length greater than 7
     const passwordRegex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     if (!passwordRegex.test(password)) {
@@ -58,7 +56,6 @@ export default function SignupForm() {
       );
     }
 
-    // Phone number validation: only digits and length must be 10
     const phoneRegex = /^\d{10}$/;
     if (!phoneRegex.test(phoneNumber)) {
       return setError("Phone number must be exactly 10 digits.");

@@ -9,8 +9,8 @@ export default function Nav() {
       <ul>
         <li>
           <Link to="/" className={classes.brand}>
-            <img src={logo} alt="CodeByDaud" />
-            <h2>CodeByDaud</h2>
+            <img src={logo} alt="FinGuard" />
+            <h2>FinGuard</h2>
           </Link>
         </li>
       </ul>

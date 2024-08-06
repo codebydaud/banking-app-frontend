@@ -1,6 +1,6 @@
 .transactions-container {
   max-height: 100%;
-  overflow-y: auto; /* Enables vertical scrolling */
+  overflow-y: auto; 
   padding: 20px;
   border: 1px solid #ddd; 
   border-radius: 8px; 

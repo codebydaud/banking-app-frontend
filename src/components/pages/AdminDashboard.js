@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import "../../styles/AdminDashboard.css"; // Import the CSS file
+import "../../styles/AdminDashboard.css"; 
 
 export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
@@ -15,7 +15,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     const adminToken = localStorage.getItem("adminAuthToken");
     if (!adminToken) {
-      navigate("/admin/login", { replace: true }); // Redirect to admin login if no token
+      navigate("/admin/login", { replace: true }); 
       return;
     }
 
@@ -38,14 +38,14 @@ export default function AdminDashboard() {
     }
 
     fetchAccounts();
-  }, [navigate]); // Only run once when component mounts
+  }, [navigate]);
 
   const handleViewClick = (accountNumber) => {
-    navigate(`/admin/profile/${accountNumber}`); // Adjust the route as needed
+    navigate(`/admin/profile/${accountNumber}`); 
   };
 
   const handleViewTransactionsClick = (accountNumber) => {
-    navigate(`/admin/transactions/${accountNumber}`); // Adjust the route as needed
+    navigate(`/admin/transactions/${accountNumber}`);
   };
 
   const handleDeleteClick = async (accountNumber) => {
@@ -67,7 +67,7 @@ export default function AdminDashboard() {
         );
         setSuccessMessage("");
         setDeletedAccountNumber(null);
-      }, 2000); // Wait for 2 seconds before removing the account
+      }, 2000); 
     } catch (err) {
       console.error("Failed to delete account:", err);
     }
