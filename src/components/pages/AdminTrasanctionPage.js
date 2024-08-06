@@ -53,26 +53,42 @@ export default function AdminTransactionsPage({ accountNumber }) {
               <li key={transaction.transactionId} className="transaction-item">
                 <div>
                   <strong>
-                    {isSource ? "To" : isTarget ? "From" : "From"} Account Number:
+                    {isSource ? "To" : isTarget ? "From" : "From"} Account
+                    Number:
                   </strong>{" "}
                   {isSource
                     ? transaction.targetAccountNumber
                     : isTarget
-                      ? transaction.sourceAccountNumber
-                      : `${transaction.sourceAccountNumber} to ${transaction.targetAccountNumber}`}
+                    ? transaction.sourceAccountNumber
+                    : `${transaction.sourceAccountNumber} to ${transaction.targetAccountNumber}`}
+                </div>
+                <div>
+                  <strong>
+                    {isSource ? "To" : isTarget ? "From" : "From/To"}:
+                  </strong>{" "}
+                  {isSource
+                    ? transaction.targetUserName
+                    : isTarget
+                    ? transaction.sourceUserName
+                    : `${transaction.sourceUserName} to ${transaction.targetUserName}`}
                 </div>
                 <div>
                   <strong>Amount:</strong> ${transaction.amount}
                 </div>
                 <div>
                   <strong>Type:</strong>{" "}
-                  {isSource ? "Sent" : isTarget ? "Received" : transaction.transactionType}
+                  {isSource
+                    ? "Sent"
+                    : isTarget
+                    ? "Received"
+                    : transaction.transactionType}
                 </div>
                 <div>
                   <strong>Description:</strong> {transaction.description}
                 </div>
                 <div>
-                  <strong>Date:</strong> {new Date(transaction.transactionDate).toLocaleDateString()}
+                  <strong>Date:</strong>{" "}
+                  {new Date(transaction.transactionDate).toLocaleDateString()}
                 </div>
               </li>
             );
