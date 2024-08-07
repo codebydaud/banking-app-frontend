@@ -53,5 +53,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "codeceptjs": "^3.6.5",
+    "nock": "^13.5.4",
+    "puppeteer": "^22.15.0"
   }
 }
