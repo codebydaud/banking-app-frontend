@@ -4,7 +4,7 @@ const nock = require("nock");
 Feature("Signup Form");
 
 Scenario(
-  "should display the signup form and handle successful signup",
+  "should display the signup form and unsuccessful signup",
   async ({ I }) => {
 
     nock("http://localhost:8080")
